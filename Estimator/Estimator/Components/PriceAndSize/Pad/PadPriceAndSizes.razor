@@ -1,0 +1,227 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Estimator.Data
+@using Estimator.Data.Entities
+@using Microsoft.AspNetCore.Identity
+
+<div>
+    <table class="table table-sm">
+        
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Length(inches)</th>
+                <th>Width(inches)</th>
+                <th>Thickness(inches)</th>
+                <th>Square Foot</th>
+                <th>Labour(per each)</th>
+                <th>Include in proposal</th>
+            </tr>
+        </thead>
+        <tbody>
+                            
+            
+            @foreach(var pad in _padPriceAndSizes)
+            {
+                
+                <tr>
+                    <td>@pad.Code </td>
+                    <td>@pad.Description</td>
+                    <td>@pad.Length</td>
+                    <td>@pad.Width''</td>
+                    <td>@pad.Height''</td>                        
+                    <td>@pad.CubicFoot</td>
+                    <td>$@pad.LabourPerEach</td>
+                    <td>
+                        <button type="button" class="btn btn-secondary" @onclick="(() => Edit(pad.Id))" data-bs-toggle="modal" data-bs-target="#padstaticBackdrop">
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-secondary" @onclick="(() => Remove(pad.Id))">                                
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+</div>
+<div> 
+    <button type="button" class="btn btn-primary" @onclick="Add" data-bs-toggle="modal" data-bs-target="#padstaticBackdrop">
+        Add
+    </button>
+</div>
+
+<div class="modal fade" id="padstaticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="padstaticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <EditForm Model="currentRow" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+        <div class="modal-body">
+            
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="currentRow.Code" id="currentRow.Code" class="form-control" aria-required="true" />
+                <label for="Input.Email" class="form-label">Code - optional</label>
+                <ValidationMessage For="() => currentRow.Code" class="text-danger" />
+            </div>         
+              <div class="form-floating mb-3">
+                <InputNumber @bind-Value="currentRow.Length" id="currentRow.Length" class="form-control" aria-required="true" />
+                <label for="Input.Length" class="form-label">Length''</label>
+                <ValidationMessage For="() => currentRow.Length" class="text-danger" />
+            </div>   
+           
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="currentRow.Width" id="currentRow.Width" class="form-control" aria-required="true" />
+                <label for="Input.Width" class="form-label">Width''</label>
+                <ValidationMessage For="() => currentRow.Width" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="currentRow.Height" id="currentRow.Height" class="form-control" aria-required="true" />
+                <label for="Input.Height" class="form-label">Thickness''</label>
+                <ValidationMessage For="() => currentRow.Height" class="text-danger" />
+            </div>
+            
+            <div class="form-floating mb-3">
+                <InputNumber TValue="decimal" @bind-Value="currentRow.LabourPerEach" id="currentRow.LabourPerEach" class="form-control" aria-required="true" />
+                <label for="Input.LabourPerEach" class="form-label">Labour Cost</label>
+                <ValidationMessage For="() => currentRow.LabourPerEach" class="text-danger" />
+            </div>
+
+
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </EditForm>
+
+    </div>
+  </div>
+</div>
+@code
+{
+
+    [Inject]
+    private PadPriceAndSizeService _service { get; set; } = default!;
+
+    private List<Data.Entities.PadPriceAndSize> _padPriceAndSizes {get; set;} = new();
+
+    [SupplyParameterFromForm]
+    private InputModel currentRow {get; set;} = new();
+
+    
+    public class InputModel
+    {
+        public string? Code {get; set;} 
+
+        public int Id {get; set;} = -1;
+        public decimal LabourPerEach {get; set;}
+
+        [Range(1.0, double.MaxValue)]
+        public double Height {get; set;}
+
+        [Required]
+        public double Width { get; set;}
+
+        [Required]
+        public double Length {get; set;}
+
+        public bool IncludeInProposal {get; set;} = false;
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+        
+        _padPriceAndSizes = await _service.GetPadPriceAndSizes();
+    }
+
+
+
+    public async void Remove(int id)
+    {
+        _service.RemovePadPriceAndSize(id);
+        _padPriceAndSizes = await _service.GetPadPriceAndSizes();
+
+    }
+
+    public async void Edit(int id)
+    {
+
+        var row = await _service.GetPadPriceAndSize(id);
+
+        if(row is not null)
+        {
+            currentRow = new()
+            {
+                Id = row.Id,
+                Code = row.Code,
+                Height = row.Height,
+                Width = row.Width,
+                Length = row.Length,
+                IncludeInProposal = row.IncludeDescriptionInProposal,
+                LabourPerEach = row.LabourPerEach        
+                
+            };
+        }      
+
+    }
+    
+
+    public async void Save()
+    {
+
+        if(currentRow != null)
+        {        
+
+            if(currentRow.Id == -1)
+            {
+                PadPriceAndSize newPad = new()
+                {
+
+                    Code = currentRow.Code,
+                    Height = currentRow.Height,
+                    LabourPerEach = currentRow.LabourPerEach,
+                    Length = currentRow.Length,
+                    Width = currentRow.Width
+                }; 
+                await _service.SavePadPriceAndSize(newPad);
+                _padPriceAndSizes.Add(newPad);
+            }
+            if(currentRow.Id > -1)
+            {
+                 PadPriceAndSize updatedPad = new()
+                {
+                    Code = currentRow.Code,
+                    Height = currentRow.Height,
+                    LabourPerEach = currentRow.LabourPerEach,                   
+                    Width = currentRow.Width,
+                    Length = currentRow.Length
+                }; 
+                await _service.UpdatePadPriceAndSize(currentRow.Id, updatedPad);
+
+                _padPriceAndSizes = await _service.GetPadPriceAndSizes();
+            }
+
+           
+           
+        } 
+       
+    }
+
+    public void Add()
+    {
+        currentRow = new();
+
+      
+    }
+
+}

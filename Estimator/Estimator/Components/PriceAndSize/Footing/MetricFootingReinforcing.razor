@@ -1,0 +1,254 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Estimator.Data
+@using Estimator.Data.Entities
+@using Estimator.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+<div>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th class="border-0"></th>
+                <th colspan="3" class="text-center border-start">10M</th>
+                <th colspan="3" class="text-center border-start">15M</th>
+                <th colspan="3" class="text-center border-start">20M</th>
+                <th colspan="3" class="text-center border-start">25M</th>
+                
+            </tr>
+            <tr>
+                <th class="border-bottom"></th>
+                <th class="border-start">Each</th>
+                <th>per Foot</th>
+                <th>Install Each</th>
+                <th class="border-start">Each</th>
+                <th>per Foot</th>
+                <th>Install Each</th>
+                <th class="border-start">Each</th>
+                <th>per Foot</th>     
+                <th>Install Each</th>
+                <th class="border-start">Each</th>
+                <th>per Foot</th>
+                <th>Install Each</th>
+                
+            </tr>
+        </thead>
+
+        <tbody>
+                            
+            
+           @foreach(var price in _reinforcingPrices)
+            {
+                
+                <tr>
+                    <td>@price.RebarType</td>
+
+                    <td class="border-start">@price.TenM.Each</td>
+                    <td>@price.TenM.PerFoot</td>
+                    <td>@price.TenM.EachInstall</td>                    
+                    
+                    <td class="border-start">@price.FifteenM.Each</td>
+                    <td>@price.FifteenM.PerFoot</td>
+                    <td>@price.FifteenM.EachInstall</td>
+
+                    <td class="border-start">@price.TwentyM.Each</td>
+                    <td>@price.TwentyM.PerFoot</td>
+                    <td>@price.TwentyM.EachInstall</td>
+
+                    <td class="border-start">@price.TwentyFiveM.Each</td>
+                    <td>@price.TwentyFiveM.PerFoot</td>
+                    <td>@price.TwentyFiveM.EachInstall</td>                
+
+
+                    <td>
+                        <button type="button" class="btn btn-secondary" @onclick="(() => Edit(price.Id))" data-bs-toggle="modal" data-bs-target="#staticRebarBackdrop">
+                            Edit
+                        </button>
+                        
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal fade" id="staticRebarBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">@_modalTitle</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <EditForm Model="currentRow" OnValidSubmit="Save" >
+        <DataAnnotationsValidator />
+        <div class="modal-body">                  
+            <div class="card-group">            
+                <div class="mb-3 card">
+                    <div class="card-header">10M</div>
+                    <div class="card-body"> 
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TenM.Each" id="currentRow.TenM.Each" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">Each</label>
+                            <ValidationMessage For="() => currentRow.TenM.Each" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TenM.PerFoot" id="currentRow.TenM.PerFoot" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TenM.PerFoot" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TenM.EachInstall" id="currentRow.TenM.EachInstall" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TenM.EachInstall" class="text-danger" />
+                        </div>
+                               
+                    </div>
+                </div>
+                <div class="mb-3 card">
+                    <div class="card-header">15M</div>
+                    <div class="card-body"> 
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.FifteenM.Each" id="currentRow.FifteenM.Each" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">Each</label>
+                            <ValidationMessage For="() => currentRow.FifteenM.Each" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.FifteenM.PerFoot" id="currentRow.FifteenM.PerFoot" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.FifteenM.PerFoot" class="text-danger" />
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.FifteenM.EachInstall" id="currentRow.FifteenM.EachInstall" class="form-control" aria-required="true" />
+                           
+                            <label for="currentRow.FifteenM.EachInstall" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.FifteenM.EachInstall" class="text-danger" />
+                        </div>
+                               
+                    </div>
+                </div>
+                <div class="mb-3 card">
+                    <div class="card-header">20M</div>
+                    <div class="card-body"> 
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyM.Each" id="currentRow.TwentyM.Each" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">Each</label>
+                            <ValidationMessage For="() => currentRow.TwentyM.Each" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyM.PerFoot" id="currentRow.TwentyM.PerFoot" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TwentyM.PerFoot" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyM.EachInstall" id="currentRow.TwentyM.EachInstall" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TwentyM.EachInstall" class="text-danger" />
+                        </div>
+                               
+                    </div>
+                </div>
+                <div class="mb-3 card">
+                    <div class="card-header">25m</div>
+                    <div class="card-body"> 
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyFiveM.Each" id="currentRow.TwentyFiveM.Each" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">Each</label>
+                            <ValidationMessage For="() => currentRow.TwentyFiveM.Each" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyFiveM.PerFoot" id="currentRow.TwentyFiveM.PerFoot" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TwentyFiveM.PerFoot" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputNumber @bind-Value="currentRow.TwentyFiveM.EachInstall" id="currentRow.TwentyFiveM.EachInstall" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <ValidationMessage For="() => currentRow.TwentyFiveM.EachInstall" class="text-danger" />
+                        </div>
+                               
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </EditForm>
+
+    </div>
+    </div>
+</div>
+
+@code
+{
+
+    [Inject]
+    private MetricFootingReinforcingService _priceService { get; set; } = default!;
+
+    private List<Rebar.Type> _rebarTypes = Rebar.FootingReinforcingPieces;
+
+    private List<MetricPricingModel> _reinforcingPrices {get; set;} = new();
+
+    [SupplyParameterFromForm]
+    private MetricPricingModel currentRow {get; set;} = new();
+
+    
+    private string _modalTitle = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {      
+        _reinforcingPrices = await _priceService.GetMetricReinforcingPrices();
+
+       
+    }
+
+    public async void Remove(int id)
+    {
+       
+        
+    }
+
+    public async void Edit(int id)
+    {
+        _modalTitle = "Edit";
+       
+       var row = await _priceService.GetMetricFootingAsync(id);
+
+       
+
+    }
+    
+
+    public async void Save()
+    {
+
+        if(currentRow != null)
+        {        
+
+            if(currentRow.Id == -1)
+            {
+                
+            }
+            if(currentRow.Id > -1)
+            {
+                await _priceService.UpdateMetricFootingAsync(currentRow.Id, currentRow);
+            }
+
+           
+           
+        } 
+       
+    }
+
+    public void Add()
+    {
+        _modalTitle = "Add";
+        currentRow = new();
+
+      
+    }
+
+}

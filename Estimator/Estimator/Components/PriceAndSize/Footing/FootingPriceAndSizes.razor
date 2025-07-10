@@ -1,0 +1,241 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Estimator.Data
+@using Estimator.Data.Entities
+@using Microsoft.AspNetCore.Identity
+@using System.Globalization
+
+@inject IStringLocalizer<Estimator.Resources.PriceAndSizeLocalization> localizer
+
+@* @implements IDisposable *@
+@* @inject PersistentComponentState ApplicationState *@
+@localizer["HomeLabel"]
+<div>
+        <table class="table table-sm">
+            
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Width (inches)</th>
+                    <th>Thickness (inches)</th>
+                    <th>Square Foot</th>
+                    <th>Labour (per linear foot)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                                
+                
+                @foreach(var footing in _footingPriceSizes)
+                {
+                    
+                    <tr>
+                        <td>@footing.Code </td>
+                        <td>@footing.Description</td>
+                        <td>@footing.Width''</td>
+                        <td>@footing.Height''</td>
+                        <td>@footing.SquareFoot</td>
+                        <td>$@footing.LabourCost</td>
+                        <td>
+                            <button type="button" class="btn btn-secondary" @onclick="(() => Edit(footing.Id))" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Edit
+                            </button>
+                            <button type="button" class="btn btn-secondary" @onclick="(() => Remove(footing.Id))">                                
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+    </div>
+    <div>          
+        
+        <button type="button" class="btn btn-primary" @onclick="Add" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Add
+        </button>
+    </div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">@_modalTitle</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <EditForm Model="currentRow" OnValidSubmit="Save" >
+        <DataAnnotationsValidator />
+        <div class="modal-body">
+            
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="currentRow.Code" id="currentRow.Code" class="form-control" aria-required="true" />
+                <label for="Input.Email" class="form-label">Code - optional</label>
+                <ValidationMessage For="() => currentRow.Code" class="text-danger" />
+            </div>         
+                
+           
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="currentRow.Width" id="currentRow.Width" class="form-control" aria-required="true" />
+                <label for="Input.Width" class="form-label">Width''</label>
+                <ValidationMessage For="() => currentRow.Width" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="currentRow.Height" id="currentRow.Height" class="form-control" aria-required="true" />
+                <label for="Input.Height" class="form-label">Thickness''</label>
+                <ValidationMessage For="() => currentRow.Height" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputNumber TValue="decimal" @bind-Value="currentRow.LabourCost" id="currentRow.LabourCost" class="form-control" aria-required="true" />
+                <label for="Input.LabourCost" class="form-label">Labour Cost</label>
+                <ValidationMessage For="() => currentRow.LabourCost" class="text-danger" />
+            </div>
+
+
+            
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="submit" data-bs-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </EditForm>
+
+    </div>
+</div>
+</div>
+@code
+{
+    [Inject]
+    private PriceAndSizeService _priceAndSizeService {get; set;} = default!;
+
+    private List<FootingPriceAndSize> _footingPriceSizes {get; set;} = new();
+
+    [SupplyParameterFromForm]
+    private InputModel currentRow {get; set;} = new();
+
+    private string _modalTitle = string.Empty;
+
+    //private PersistingComponentStateSubscription persistingComponentStateSubscription;
+private class InputModel
+{
+    public string? Code {get; set;} 
+    public int Id {get; set;} = -1;
+    public decimal LabourCost {get; set;}
+
+    [Range(1.0, double.MaxValue)]
+    public double Height {get; set;}
+
+    [Required]
+    public double Width { get; set;}
+
+    public bool IncludeInProposal {get; set;} = false;
+}
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        @* https://juliocasal.com/blog/dealing-with-blazor-prerendering *@
+       // persistingComponentStateSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+
+      //  if(!(ApplicationState.TryTakeFromJson<List<FootingPriceAndSize>>("data", out var restored)))
+      //  {
+       //     _footingPriceSizes = await _priceAndSizeService.GetFootingPriceAndSizes();
+      //  }
+       // else{
+      //      _footingPriceSizes = restored!;
+      //  }
+        var test = Resources.PriceAndSizeLocalization.HomeLabel;
+        _footingPriceSizes = await _priceAndSizeService.GetFootingPriceAndSizes();
+    }
+
+  //  private Task PersistData()
+  //  {
+  //      ApplicationState.PersistAsJson("data", _footingPriceSizes);
+
+  //      return Task.CompletedTask;
+  //  }
+
+  //  void IDisposable.Dispose()
+   // {
+   //     persistingComponentStateSubscription.Dispose();
+  //  }
+
+    public async void Remove(int id)
+    {
+        _priceAndSizeService.RemoveFootingPriceAndSize(id);
+        _footingPriceSizes = await _priceAndSizeService.GetFootingPriceAndSizes();
+
+    }
+
+    public async void Edit(int id)
+    {
+        _modalTitle = "Edit";
+        var row = await _priceAndSizeService.GetFootingPriceAndSize(id);
+
+        if(row is not null)
+        {
+            currentRow = new()
+            {
+                Id = row.Id,
+                Code = row.Code,
+                Height = row.Height,
+                Width = row.Width,
+                IncludeInProposal = row.IncludeDescriptionInProposal,
+                LabourCost = row.LabourCost        
+                
+            };
+        }      
+
+    }
+    
+
+    public async void Save()
+    {
+
+        if(currentRow != null)
+        {        
+
+            if(currentRow.Id == -1)
+            {
+                FootingPriceAndSize newfooting = new()
+                {
+
+                    Code = currentRow.Code,
+                    Height = currentRow.Height,
+                    LabourCost = currentRow.LabourCost,
+                    Length = 0.0,
+                    Width = currentRow.Width
+                }; 
+                await _priceAndSizeService.SaveFootingPriceAndSize(newfooting);
+                _footingPriceSizes.Add(newfooting);
+            }
+            if(currentRow.Id > -1)
+            {
+                 FootingPriceAndSize updatedFooting = new()
+                {
+                    Code = currentRow.Code,
+                    Height = currentRow.Height,
+                    LabourCost = currentRow.LabourCost,                   
+                    Width = currentRow.Width
+                }; 
+                await _priceAndSizeService.UpdateFootingPriceAndSize(currentRow.Id, updatedFooting);
+
+                _footingPriceSizes = await _priceAndSizeService.GetFootingPriceAndSizes();
+            }
+
+           
+           
+        } 
+       
+    }
+
+    public void Add()
+    {
+        _modalTitle = "Add";
+        currentRow = new();
+
+      
+    }
+
+}
