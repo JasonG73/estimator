@@ -46,7 +46,7 @@ namespace Estimator.Data.Tenant.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FootingPriceAndSizes");
+                    b.ToTable("FootingPriceAndSizes", (string)null);
                 });
 
             modelBuilder.Entity("Estimator.Data.Entities.MetricReinforcingPrice", b =>
@@ -76,7 +76,7 @@ namespace Estimator.Data.Tenant.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MetricReinforcingPrices");
+                    b.ToTable("MetricReinforcingPrices", (string)null);
                 });
 
             modelBuilder.Entity("Estimator.Data.Entities.PadPriceAndSize", b =>
@@ -109,7 +109,7 @@ namespace Estimator.Data.Tenant.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PadPriceAndSizes");
+                    b.ToTable("PadPriceAndSizes", (string)null);
                 });
 #pragma warning restore 612, 618
         }

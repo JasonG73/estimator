@@ -62,6 +62,15 @@ builder.Services.AddScoped<IMessageWriter, LoggingMessageWriter>();
 
 var app = builder.Build();
 
+using var scope = app.Services.CreateScope();
+
+var appContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+appContext.Database.Migrate();
+
+var tenantContext = scope.ServiceProvider.GetRequiredService<TenantAreaDbContext>();
+tenantContext.Database.Migrate();
+
+
 string[] supportedCultures = ["en-US", "fr"];
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture(supportedCultures[0])
