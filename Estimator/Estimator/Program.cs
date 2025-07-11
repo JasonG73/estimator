@@ -42,7 +42,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // options => options.UseSqlite(connectionString), ServiceLifetime.Scoped);
 
 builder.Services.AddDbContext<TenantAreaDbContext>(options => options.UseSqlite(connectionString));
-    
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -64,12 +64,12 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 
-var appContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+/* var appContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 appContext.Database.EnsureCreated();
 appContext.Database.Migrate();
 
 var tenantContext = scope.ServiceProvider.GetRequiredService<TenantAreaDbContext>();
-tenantContext.Database.Migrate();
+tenantContext.Database.Migrate(); */
 
 
 string[] supportedCultures = ["en-US", "fr"];
