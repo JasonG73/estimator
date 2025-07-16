@@ -35,7 +35,7 @@
                         <td>@footing.Width''</td>
                         <td>@footing.Height''</td>
                         <td>@footing.SquareFoot</td>
-                        <td>$@footing.LabourCost</td>
+                        <td>@footing.LabourCost.ToString("c")</td>
                         <td>
                             <button type="button" class="btn btn-secondary" @onclick="(() => Edit(footing.Id))" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 Edit

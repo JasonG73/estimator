@@ -25,12 +25,12 @@ public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, Auth
 
         MetricPricingModel lenghtModel = await GetRebarType(Rebar.Type.FootingLengths, tenantId);
         MetricPricingModel cross = await GetRebarType(Rebar.Type.FootingCrossPieces, tenantId);
-        MetricPricingModel dowels = await GetRebarType(Rebar.Type.PadDowels, tenantId); 
+        MetricPricingModel dowels = await GetRebarType(Rebar.Type.FootingDowels, tenantId); 
 
         return [lenghtModel, cross, dowels];
     }
 
-    public async Task<MetricPricingModel> GetMetricFootingAsync(int id)
+    public async Task<MetricPricingModel> GetMetricFootingReinforcingAsync(Rebar.Type rebarType)
     {
 
         var tenantId = await GetTenantId();
@@ -40,14 +40,47 @@ public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, Auth
             throw new Exception("error with tenantId");
         }
 
-        return new MetricPricingModel();
+        return await GetRebarType(rebarType, tenantId);
 
-       /*  return await _dBContext.MetricReinforcingPrices
-            .Where(c => c.Id == id && c.TenantId == tenantId)
-            .FirstOrDefaultAsync(); */
     }
 
-    public async Task<bool> UpdateMetricFootingAsync(int id, MetricPricingModel updated)
+    private async void UpdateTypeSize(string tenantId, Rebar.Type rebarType, Rebar.MetricSize rebarSize, InputPriceModel inputPriceModel)
+    {
+         MetricReinforcingPrice? entity = await _dBContext.MetricReinforcingPrices
+              .Where(c => c.RebarTypeId == rebarType && c.RebarSizeId == rebarSize && c.TenantId == tenantId)
+              .FirstOrDefaultAsync();
+
+        if (entity is null)
+        {
+            //create new
+            MetricReinforcingPrice metric = new()
+            {
+                RebarSizeId = rebarSize,
+                RebarTypeId = rebarType,
+                PerEach = inputPriceModel.Each,
+                PerEachInstall = inputPriceModel.EachInstall,
+                PerFootInstall = inputPriceModel.PerFoot,
+                TenantId = tenantId
+            };
+
+            _dBContext.MetricReinforcingPrices.Add(metric);
+
+            await _dBContext.SaveChangesAsync();
+        }
+        else
+        {
+            //update
+            entity.PerEach = inputPriceModel.Each;
+            entity.PerEachInstall = inputPriceModel.EachInstall;
+            entity.PerFootInstall = inputPriceModel.PerFoot;
+
+            await _dBContext.SaveChangesAsync();
+
+        }
+
+    }
+
+    public async Task<MetricPricingModel> UpdateMetricFootingReinforcingAsync(MetricPricingModel updated)
     {
         var tenantId = await GetTenantId();
 
@@ -55,21 +88,13 @@ public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, Auth
         {
             throw new Exception("error with tenantId");
         }
-        
-        
 
-       /*  MetricReinforcingPrice entity = await _dBContext.MetricReinforcingPrices
-              .Where(c => c.Id == id && c.TenantId == tenantId)
-              .FirstOrDefaultAsync(); */
+        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TenM, updated.TenM);
+        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.FifteenM, updated.FifteenM);
+        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TwentyM, updated.TwentyM);
+        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TwentyFiveM, updated.TwentyFiveM);
 
-
-
-        //updated.Adapt(entity);
-
-        await _dBContext.SaveChangesAsync();
-
-
-        return true;
+        return await GetRebarType(updated.RebarType, tenantId);
 
 
     }

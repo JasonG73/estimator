@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Company\Add\" />
     <Folder Include="Data\Tenant\Migrations\" />
   </ItemGroup>
 

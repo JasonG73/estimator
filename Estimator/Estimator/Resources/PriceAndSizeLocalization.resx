@@ -120,4 +120,13 @@
   <data name="HomeLabel" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="FootingLengths" xml:space="preserve">
+    <value>20' lenghts</value>
+  </data>
+  <data name="FootingCrossPieces" xml:space="preserve">
+    <value>Cross-peices</value>
+  </data>
+  <data name="FootingDowels" xml:space="preserve">
+    <value>Dowels</value>
+  </data>
 </root>

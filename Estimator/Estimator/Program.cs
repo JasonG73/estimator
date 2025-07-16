@@ -11,6 +11,7 @@ using Estimator.Components.PriceAndSize;
 using Microsoft.AspNetCore.Authentication;
 using Estimator.Components.PriceAndSize.Footing;
 using Estimator.Components.PriceAndSize.Pad;
+using Estimator.Components.Company;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddScoped<TenantIdProvider>();
 builder.Services.AddScoped<PriceAndSizeService>();
 builder.Services.AddScoped<PadPriceAndSizeService>();
 builder.Services.AddScoped<MetricFootingReinforcingService>();
+builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformation>();
 builder.Services.AddScoped<IMessageWriter, LoggingMessageWriter>();
 
@@ -77,6 +79,7 @@ var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
+
 
 app.UseRequestLocalization(localizationOptions);
 // Configure the HTTP request pipeline.

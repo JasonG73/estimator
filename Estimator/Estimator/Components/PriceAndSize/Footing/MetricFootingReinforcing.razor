@@ -3,6 +3,8 @@
 @using Estimator.Data.Entities
 @using Estimator.Data.Models
 @using Microsoft.AspNetCore.Identity
+@using System.Globalization
+@inject IStringLocalizer<Estimator.Resources.PriceAndSizeLocalization> localizer
 
 <div>
     <table class="table table-sm">
@@ -17,18 +19,18 @@
             </tr>
             <tr>
                 <th class="border-bottom"></th>
-                <th class="border-start">Each</th>
-                <th>per Foot</th>
-                <th>Install Each</th>
-                <th class="border-start">Each</th>
-                <th>per Foot</th>
-                <th>Install Each</th>
-                <th class="border-start">Each</th>
-                <th>per Foot</th>     
-                <th>Install Each</th>
-                <th class="border-start">Each</th>
-                <th>per Foot</th>
-                <th>Install Each</th>
+                <th class="border-start text-center">Each</th>
+                <th class="text-center">per Foot</th>
+                <th class="text-center">Install Each</th>
+                <th class="border-start text-center">Each</th>
+                <th class="text-center">per Foot</th>
+                <th class="text-center">Install Each</th>
+                <th class="border-start text-center">Each</th>
+                <th class="text-center">per Foot</th>     
+                <th class="text-center">Install Each</th>
+                <th class="border-start text-center">Each</th>
+                <th class="text-center">per Foot</th>
+                <th class="text-center">Install Each</th>
                 
             </tr>
         </thead>
@@ -40,27 +42,27 @@
             {
                 
                 <tr>
-                    <td>@price.RebarType</td>
+                    <td>@localizer[@price.RebarType.ToString()]</td>
 
-                    <td class="border-start">@price.TenM.Each</td>
-                    <td>@price.TenM.PerFoot</td>
-                    <td>@price.TenM.EachInstall</td>                    
+                    <td class="border-start text-end">@price.TenM.Each.ToString("c")</td>
+                    <td class="text-end">@price.TenM.PerFoot.ToString("c")</td>
+                    <td  class="text-end">@price.TenM.EachInstall.ToString("c")</td>                    
                     
-                    <td class="border-start">@price.FifteenM.Each</td>
-                    <td>@price.FifteenM.PerFoot</td>
-                    <td>@price.FifteenM.EachInstall</td>
+                    <td class="border-start text-end">@price.FifteenM.Each.ToString("c")</td>
+                    <td class="text-end">@price.FifteenM.PerFoot.ToString("c")</td>
+                    <td class="text-end">@price.FifteenM.EachInstall.ToString("c")</td>
 
-                    <td class="border-start">@price.TwentyM.Each</td>
-                    <td>@price.TwentyM.PerFoot</td>
-                    <td>@price.TwentyM.EachInstall</td>
+                    <td class="border-start text-end">@price.TwentyM.Each.ToString("c")</td>
+                    <td class="text-end">@price.TwentyM.PerFoot.ToString("c")</td>
+                    <td class="text-end">@price.TwentyM.EachInstall.ToString("c")</td>
 
-                    <td class="border-start">@price.TwentyFiveM.Each</td>
-                    <td>@price.TwentyFiveM.PerFoot</td>
-                    <td>@price.TwentyFiveM.EachInstall</td>                
+                    <td class="border-start text-end">@price.TwentyFiveM.Each.ToString("c")</td>
+                    <td class="text-end">@price.TwentyFiveM.PerFoot.ToString("c")</td>
+                    <td class="text-end">@price.TwentyFiveM.EachInstall.ToString("c")</td>                
 
 
                     <td>
-                        <button type="button" class="btn btn-secondary" @onclick="(() => Edit(price.Id))" data-bs-toggle="modal" data-bs-target="#staticRebarBackdrop">
+                        <button type="button" class="btn btn-secondary" @onclick="(() => Edit(price.RebarType))" data-bs-toggle="modal" data-bs-target="#staticRebarBackdrop">
                             Edit
                         </button>
                         
@@ -88,18 +90,18 @@
                     <div class="card-header">10M</div>
                     <div class="card-body"> 
                         <div class="form-floating mb-3">
-                            <InputNumber @bind-Value="currentRow.TenM.Each" id="currentRow.TenM.Each" class="form-control" aria-required="true" />
+                            <InputNumber @bind-Value="currentRow.TenM.Each"  id="currentRow.TenM.Each" class="form-control" aria-required="true" />
                             <label for="Input.Width" class="form-label">Each</label>
                             <ValidationMessage For="() => currentRow.TenM.Each" class="text-danger" />
                         </div>
                         <div class="form-floating mb-3">
-                            <InputNumber @bind-Value="currentRow.TenM.PerFoot" id="currentRow.TenM.PerFoot" class="form-control" aria-required="true" />
+                            <InputNumber @bind-Value="currentRow.TenM.PerFoot" @bind-Value:format="$0.00" id="currentRow.TenM.PerFoot" class="form-control" aria-required="true" />
                             <label for="Input.Width" class="form-label">per Foot</label>
                             <ValidationMessage For="() => currentRow.TenM.PerFoot" class="text-danger" />
                         </div>
                         <div class="form-floating mb-3">
-                            <InputNumber @bind-Value="currentRow.TenM.EachInstall" id="currentRow.TenM.EachInstall" class="form-control" aria-required="true" />
-                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <InputNumber @bind-Value="currentRow.TenM.EachInstall" @bind-Value:format="$0.00" id="currentRow.TenM.EachInstall" class="form-control" aria-required="true" />
+                            <label for="Input.Width" class="form-label">Install Each</label>
                             <ValidationMessage For="() => currentRow.TenM.EachInstall" class="text-danger" />
                         </div>
                                
@@ -122,7 +124,7 @@
                         <div class="form-floating mb-3">
                             <InputNumber @bind-Value="currentRow.FifteenM.EachInstall" id="currentRow.FifteenM.EachInstall" class="form-control" aria-required="true" />
                            
-                            <label for="currentRow.FifteenM.EachInstall" class="form-label">per Foot</label>
+                            <label for="currentRow.FifteenM.EachInstall" class="form-label">Install Each</label>
                             <ValidationMessage For="() => currentRow.FifteenM.EachInstall" class="text-danger" />
                         </div>
                                
@@ -143,7 +145,7 @@
                         </div>
                         <div class="form-floating mb-3">
                             <InputNumber @bind-Value="currentRow.TwentyM.EachInstall" id="currentRow.TwentyM.EachInstall" class="form-control" aria-required="true" />
-                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <label for="Input.Width" class="form-label">Install Each</label>
                             <ValidationMessage For="() => currentRow.TwentyM.EachInstall" class="text-danger" />
                         </div>
                                
@@ -164,7 +166,7 @@
                         </div>
                         <div class="form-floating mb-3">
                             <InputNumber @bind-Value="currentRow.TwentyFiveM.EachInstall" id="currentRow.TwentyFiveM.EachInstall" class="form-control" aria-required="true" />
-                            <label for="Input.Width" class="form-label">per Foot</label>
+                            <label for="Input.Width" class="form-label">Install Each</label>
                             <ValidationMessage For="() => currentRow.TwentyFiveM.EachInstall" class="text-danger" />
                         </div>
                                
@@ -211,11 +213,11 @@
         
     }
 
-    public async void Edit(int id)
+    public async void Edit(Rebar.Type type)
     {
         _modalTitle = "Edit";
        
-       var row = await _priceService.GetMetricFootingAsync(id);
+       currentRow = await _priceService.GetMetricFootingReinforcingAsync(type);
 
        
 
@@ -228,16 +230,9 @@
         if(currentRow != null)
         {        
 
-            if(currentRow.Id == -1)
-            {
-                
-            }
-            if(currentRow.Id > -1)
-            {
-                await _priceService.UpdateMetricFootingAsync(currentRow.Id, currentRow);
-            }
-
-           
+            
+            await _priceService.UpdateMetricFootingReinforcingAsync(currentRow);
+             _reinforcingPrices = await _priceService.GetMetricReinforcingPrices();        
            
         } 
        

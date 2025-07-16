@@ -12,6 +12,8 @@ public class TenantAreaDbContext : DbContext
     public DbSet<FootingPriceAndSize> FootingPriceAndSizes { get; set; }
     public DbSet<PadPriceAndSize> PadPriceAndSizes { get; set; }
     public DbSet<MetricReinforcingPrice> MetricReinforcingPrices { get; set; }
+
+    public DbSet<Company> Companies { get; set; }
     public TenantAreaDbContext(DbContextOptions<TenantAreaDbContext> options, TenantIdProvider tenantIdProvider) : base(options)
     {
         // _tenantId = tenantIdProvider.TenantId;

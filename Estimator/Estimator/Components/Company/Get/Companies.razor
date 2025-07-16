@@ -1,0 +1,62 @@
+﻿@page "/companies"
+
+<AuthorizeView>
+<h3>Companies</h3>
+
+@foreach(var company in _companies)
+{
+    
+    <div class="mb-3 card">
+            <div class="card-header">@company.Name</div>
+            <div class="card-body">
+
+                
+                    @* @foreach (var job in company.Jobs)
+                    {
+                    <div class="card border-light mb-3" style="max-width: 18rem;">
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">@job.Name</h5>
+                            <p>@job.JobNumber</p>
+                            <p>@job.Location</p>
+                            <p>@job.Date</p>
+                        </div>                   
+                        <div class="card-footer">
+                            <div class="btn-group-sm">
+                            <a href="/companies/@company.Id/jobs/@job.Id/estimate" class="btn btn-outline-primary me-1" role="button">Estimate</a>
+                            <a href="/companies/@company.Id/edit-job/@job.Id" class="btn btn-outline-primary me-1" role="button">Edit</a>
+                        </div>
+                           
+                        </div>
+                    </div> 
+                    }         *@         
+
+            </div>
+
+            <div class="card-footer">
+                <div class="btn-group-sm">
+                    <a href="/companies/@company.Id/add-job" class="btn btn-outline-primary me-1" role="button">Add Job</a>
+                    <a href="/edit-company/@company.Id" class="btn btn-outline-primary me-1" role="button">Edit</a>
+                </div>
+            </div>
+    
+    </div>
+}
+</AuthorizeView>
+
+@code {
+
+    [Inject]
+    CompanyService CompanyService {get; set;} = default!;
+    
+    private List<Data.Entities.Company> _companies = new();
+
+   // private List<JobView> jobs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+       _companies = await CompanyService.GetCompanies();
+      
+    }
+
+}
