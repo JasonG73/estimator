@@ -7,13 +7,23 @@ using Estimator.Components.Account;
 using Estimator.Data;
 using Estimator.Data.TenantExtention;
 using Estimator.Data.Tenant;
-using Estimator.Components.PriceAndSize;
 using Microsoft.AspNetCore.Authentication;
 using Estimator.Components.PriceAndSize.Footing;
 using Estimator.Components.PriceAndSize.Pad;
+
 using Estimator.Components.Company;
+using Estimator.Components.Company.Add;
+using Estimator.Components.Company.Update;
+using Estimator.Components.Alert;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+.ReadFrom.Configuration(builder.Configuration)
+.CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddLocalization();
 
@@ -58,6 +68,9 @@ builder.Services.AddScoped<PriceAndSizeService>();
 builder.Services.AddScoped<PadPriceAndSizeService>();
 builder.Services.AddScoped<MetricFootingReinforcingService>();
 builder.Services.AddScoped<CompanyService>();
+builder.Services.AddScoped<AddCompanyService>();
+builder.Services.AddScoped<UpdateCompanyService>();
+builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IClaimsTransformation, CustomClaimsTransformation>();
 builder.Services.AddScoped<IMessageWriter, LoggingMessageWriter>();
 
@@ -65,6 +78,8 @@ builder.Services.AddScoped<IMessageWriter, LoggingMessageWriter>();
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
+
+app.UseSerilogRequestLogging();
 
 var appContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 

@@ -7,21 +7,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Estimator.Components.PriceAndSize.Pad;
 
-public class PadPriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider)
-    : BaseTenantAreaService(dbContext, authenticationStateProvider)
+public class PadPriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider, ILogger<PadPriceAndSizeService> logger)
+    : BaseTenantAreaService(dbContext, authenticationStateProvider, logger)
 {
 
     public async Task<List<PadPriceAndSize>> GetPadPriceAndSizes()
     {
 
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
+
         return await _dBContext.PadPriceAndSizes
-        .Where(p => p.TenantId == tenantId)
+        .Where(p => p.TenantId == tenantInfo.TenantId)
         .ToListAsync();
 
     }
@@ -29,14 +30,14 @@ public class PadPriceAndSizeService(TenantAreaDbContext dbContext, Authenticatio
     public async Task<PadPriceAndSize?> GetPadPriceAndSize(int id)
     {        
         
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (tenantId == null)
+        if (tenantInfo is null)
         {
             return null;
         }
 
-        var entity = await _dBContext.PadPriceAndSizes.Where(f => f.Id == id && f.TenantId == tenantId)
+        var entity = await _dBContext.PadPriceAndSizes.Where(f => f.Id == id && f.TenantId == tenantInfo.TenantId)
         .FirstOrDefaultAsync();
 
         return entity;
@@ -45,6 +46,7 @@ public class PadPriceAndSizeService(TenantAreaDbContext dbContext, Authenticatio
 
     public async void RemovePadPriceAndSize(int id)
     {
+        
         var entity = await GetPadPriceAndSize(id);
         if (entity is not null)
         {
@@ -57,14 +59,14 @@ public class PadPriceAndSizeService(TenantAreaDbContext dbContext, Authenticatio
     {
 
 
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
-        newPadPriceAndSize.TenantId = tenantId;
+        newPadPriceAndSize.TenantId = tenantInfo.TenantId;
 
         _dBContext.PadPriceAndSizes.Add(newPadPriceAndSize);
         await _dBContext.SaveChangesAsync();
@@ -76,15 +78,15 @@ public class PadPriceAndSizeService(TenantAreaDbContext dbContext, Authenticatio
 
     public async Task<PadPriceAndSize?> UpdatePadPriceAndSize(int padId, PadPriceAndSize updatedPadPriceAndSize)
     {
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
 
-        var entity = await _dBContext.PadPriceAndSizes.Where(f => f.Id == padId && f.TenantId == tenantId)
+        var entity = await _dBContext.PadPriceAndSizes.Where(f => f.Id == padId && f.TenantId == tenantInfo.TenantId)
         .FirstOrDefaultAsync();
 
         if (entity is not null)

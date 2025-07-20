@@ -10,22 +10,22 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Estimator.Components.PriceAndSize.Footing;
 
-public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider)
-    : BaseTenantAreaService(dbContext, authenticationStateProvider)
+public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider, ILogger<MetricFootingReinforcingService> logger)
+    : BaseTenantAreaService(dbContext, authenticationStateProvider, logger)
 {
 
     public async Task<List<MetricPricingModel>> GetMetricReinforcingPrices()
     {
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
-        MetricPricingModel lenghtModel = await GetRebarType(Rebar.Type.FootingLengths, tenantId);
-        MetricPricingModel cross = await GetRebarType(Rebar.Type.FootingCrossPieces, tenantId);
-        MetricPricingModel dowels = await GetRebarType(Rebar.Type.FootingDowels, tenantId); 
+        MetricPricingModel lenghtModel = await GetRebarType(Rebar.Type.FootingLengths, tenantInfo.TenantId);
+        MetricPricingModel cross = await GetRebarType(Rebar.Type.FootingCrossPieces, tenantInfo.TenantId);
+        MetricPricingModel dowels = await GetRebarType(Rebar.Type.FootingDowels, tenantInfo.TenantId); 
 
         return [lenghtModel, cross, dowels];
     }
@@ -33,14 +33,14 @@ public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, Auth
     public async Task<MetricPricingModel> GetMetricFootingReinforcingAsync(Rebar.Type rebarType)
     {
 
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
-        return await GetRebarType(rebarType, tenantId);
+        return await GetRebarType(rebarType, tenantInfo.TenantId);
 
     }
 
@@ -80,21 +80,22 @@ public class MetricFootingReinforcingService(TenantAreaDbContext dbContext, Auth
 
     }
 
-    public async Task<MetricPricingModel> UpdateMetricFootingReinforcingAsync(MetricPricingModel updated)
+    public async Task<MetricPricingModel?> UpdateMetricFootingReinforcingAsync(MetricPricingModel updated)
     {
-        var tenantId = await GetTenantId();
+        
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
-        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TenM, updated.TenM);
-        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.FifteenM, updated.FifteenM);
-        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TwentyM, updated.TwentyM);
-        UpdateTypeSize(tenantId, updated.RebarType, Rebar.MetricSize.TwentyFiveM, updated.TwentyFiveM);
+        UpdateTypeSize(tenantInfo.TenantId, updated.RebarType, Rebar.MetricSize.TenM, updated.TenM);
+        UpdateTypeSize(tenantInfo.TenantId, updated.RebarType, Rebar.MetricSize.FifteenM, updated.FifteenM);
+        UpdateTypeSize(tenantInfo.TenantId, updated.RebarType, Rebar.MetricSize.TwentyM, updated.TwentyM);
+        UpdateTypeSize(tenantInfo.TenantId, updated.RebarType, Rebar.MetricSize.TwentyFiveM, updated.TwentyFiveM);
 
-        return await GetRebarType(updated.RebarType, tenantId);
+        return await GetRebarType(updated.RebarType, tenantInfo.TenantId);
 
 
     }

@@ -6,21 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Estimator.Components.PriceAndSize.Footing;
 
-public class PriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider)
-    : BaseTenantAreaService(dbContext, authenticationStateProvider)
+public class PriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationStateProvider authenticationStateProvider, ILogger<PriceAndSizeService> logger)
+    : BaseTenantAreaService(dbContext, authenticationStateProvider, logger)
 {
 
     public async Task<List<FootingPriceAndSize>> GetFootingPriceAndSizes()
     {
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
         return await _dBContext.FootingPriceAndSizes
-        .Where(f => f.TenantId == tenantId)
+        .Where(f => f.TenantId == tenantInfo.TenantId)
         .ToListAsync();
 
     }
@@ -28,14 +28,14 @@ public class PriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationSt
     public async Task<FootingPriceAndSize?> GetFootingPriceAndSize(int id)
     {
 
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (tenantId == null)
+        if (tenantInfo is null)
         {
             return null;
         }
 
-        var entity = await _dBContext.FootingPriceAndSizes.Where(f => f.Id == id && f.TenantId == tenantId)
+        var entity = await _dBContext.FootingPriceAndSizes.Where(f => f.Id == id && f.TenantId == tenantInfo.TenantId)
         .FirstOrDefaultAsync();
 
         return entity;
@@ -55,16 +55,14 @@ public class PriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationSt
 
     public async Task<FootingPriceAndSize> SaveFootingPriceAndSize(FootingPriceAndSize newFootingPriceAndSize)
     {
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-
-        var tenantId = await GetTenantId();
-
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
-        newFootingPriceAndSize.TenantId = tenantId;
+        newFootingPriceAndSize.TenantId = tenantInfo.TenantId;
 
         _dBContext.FootingPriceAndSizes.Add(newFootingPriceAndSize);
         await _dBContext.SaveChangesAsync();
@@ -76,15 +74,15 @@ public class PriceAndSizeService(TenantAreaDbContext dbContext, AuthenticationSt
 
     public async Task<FootingPriceAndSize?> UpdateFootingPriceAndSize(int footingId, FootingPriceAndSize updatedFootingPriceAndSzie)
     {
-        var tenantId = await GetTenantId();
+        TenantInfo? tenantInfo = await GetTenantInfo();
 
-        if (string.IsNullOrEmpty(tenantId))
+        if (tenantInfo is null)
         {
-            throw new Exception("error with tenantId");
+            return null;
         }
 
 
-        var entity = await _dBContext.FootingPriceAndSizes.Where(f => f.Id == footingId && f.TenantId == tenantId)
+        var entity = await _dBContext.FootingPriceAndSizes.Where(f => f.Id == footingId && f.TenantId == tenantInfo.TenantId)
         .FirstOrDefaultAsync();
 
         if (entity is not null)

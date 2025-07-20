@@ -1,0 +1,92 @@
+﻿@page "/edit-company/{CompanyId:int}"
+@using Estimator.Components.Alert
+@rendermode InteractiveServer
+@inject IAlertService AlertService
+
+<h3>Edit Company</h3>
+<EditForm Model="_company" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label" for="name">Name</label>
+        <InputText class="form-control" id="name" @bind-Value="_company.Name" />
+
+
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="street">Street </label>
+        <InputText class="form-control" id="street" @bind-Value="_company.Street" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="address">City, Province, Postal Code </label>
+        <InputText class="form-control" id="address" @bind-Value="_company.Address" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="phone-number">Phone Number</label>
+        <InputText class="form-control" id="phone-number" @bind-Value="_company.PhoneNumber" />
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="mobile">Mobile</label>
+        <InputText class="form-control" id="moble" @bind-Value="_company.Mobile" />
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <InputText class="form-control" id="email" @bind-Value="_company.Email" />
+
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+</EditForm>
+
+
+@code {
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
+    private UpdateCompanyService _companyService { get; set; } = default!;
+
+  
+    [Parameter]
+    public int CompanyId { get; set; }
+    private Data.Entities.Company? _company { get; set; }   
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (CompanyId > 0)
+        {
+            _company = await _companyService.GetCompanyAsync(CompanyId);
+            if(_company is null)
+            {
+                AlertService.Warn("Not able to edit", true);
+                //log error
+                NavigationManager.NavigateTo("/companies");
+            }
+        }
+        else
+        {
+            AlertService.Warn("Not able to edit", true);
+            //log error
+            NavigationManager.NavigateTo("/companies");
+        }
+
+    }
+
+    public async void Save()
+    {
+
+        
+        Data.Entities.Company? company = await _companyService.UpdateCompanyAsync(CompanyId, _company);     
+
+
+        NavigationManager.NavigateTo($"/companies", true);
+    }
+}
+

@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.Core" Version="1.2.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5" />
     <ProjectReference Include="..\Estimator.Client\Estimator.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.3" />
@@ -20,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Company\Add\" />
     <Folder Include="Data\Tenant\Migrations\" />
   </ItemGroup>
 

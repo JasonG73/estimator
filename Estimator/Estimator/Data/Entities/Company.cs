@@ -1,11 +1,14 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Estimator.Data.Entities;
 
 public class Company : TenantBase
 {
-    public int Id { get; set; } = -1;
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Street {get; set;} = string.Empty;
     public string Address { get; set; } = string.Empty;

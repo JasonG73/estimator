@@ -1,0 +1,69 @@
+﻿@page "/add-company"
+@using Estimator.Components.Alert
+@rendermode InteractiveServer
+@inject IAlertService AlertService
+
+<h3>Add Company</h3>
+<EditForm Model="_company" OnValidSubmit="Save" FormName="AddCompany">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label" for="name">Name</label>
+        <InputText class="form-control" id="name" @bind-Value="_company.Name" aria-required="true" />
+    </div>
+   
+    <div class="mb-3">
+        <label class="form-label" for="street">Street </label>
+        <InputText class="form-control" id="street" @bind-Value="_company.Street" aria-required="true" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="address">City, Province, Postal Code </label>
+        <InputText class="form-control" id="address" @bind-Value="_company.Address" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="phone-number">Phone Number</label>
+        <InputText class="form-control" id="phone-number" @bind-Value="_company.PhoneNumber" aria-required="true" />
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="mobile">Mobile</label>
+        <InputText class="form-control" id="moble" @bind-Value="_company.Mobile" />
+
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="email">Email</label>
+        <InputText class="form-control" id="email" @bind-Value="_company.Email" />
+
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+</EditForm>
+
+
+@code {
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
+    private AddCompanyService _companyService { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private Data.Entities.Company _company { get; set; } = new();   
+
+    public async void Save()
+    {
+
+        
+        Data.Entities.Company company = await _companyService.AddCompanyAsync(_company);     
+        AlertService.Success("Company created", true);       
+
+        NavigationManager.NavigateTo($"/companies");
+        
+    }
+
+}
