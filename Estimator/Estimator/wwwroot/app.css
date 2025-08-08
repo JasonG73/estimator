@@ -1,5 +1,21 @@
+.page {
+    background-color: #223046;
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;    /* Centers vertically */
+    
+    border: 1px solid black;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.content {
+    width: 100px;
+    height: 100px;
+    
+    background-color: #fff;
 }
 
 a, .btn-link {
