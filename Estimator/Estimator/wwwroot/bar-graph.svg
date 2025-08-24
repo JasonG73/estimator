@@ -1,0 +1,12 @@
+<svg width="110" height="70" viewBox="0 0 110 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simple Bar Chart -->
+  <!-- Chart background/grid lines -->
+  <line x1="5" y1="70" x2="110" y2="70" stroke="#cbd5e1" stroke-width="2"/> <!-- X-axis -->
+  <line x1="5" y1="10" x2="5" y2="71" stroke="#cbd5e1" stroke-width="2"/> <!-- Y-axis -->
+
+  <!-- Bars, using the new color -->
+  <rect x="20" y="50" width="15" height="20" rx="3" fill="#15365F"/> <!-- Bar 1 -->
+  <rect x="50" y="30" width="15" height="40" rx="3" fill="#15365F"/> <!-- Bar 2 -->
+  <rect x="80" y="10" width="15" height="60" rx="3" fill="#15365F"/> <!-- Bar 3 -->  
+
+</svg>

@@ -2,11 +2,163 @@
 @using Microsoft.Extensions.Localization
 @using System.Globalization
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col vert-align">
 
-@Thread.CurrentThread.CurrentCulture;
-@Thread.CurrentThread.CurrentUICulture;
+                <h2>Revolutionize Your Formwork Estimation Process</h2>
+                <p>Welcome to our cutting-edge Formwork estimation tool, designed to streamline your construction projects. Experience unparalleled accuracy and efficiency, saving you both time and resources.</p>
+                <button class="btn btn-primary">Sign up</button>
+            </div>
+            <div class="col text-center">
+                <img src="hero-section-1.png" style="width: 450px; height:450px" alt="concrete wall, showing rebar">
+            </div>
+        </div>
 
-Welcome to your new app.
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <h3>Discover the Power of Accurate Estimation</h3>
+            <div class="col-5">
+                <p>Our FormworkX estimation tool delivers precise calculations to ensure your projects stays on budget. Experience the confidence with reliable data at your fingertips. </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col bottom-align">
+                <img src="bar-graph.svg" alt="bar graph">
+            </div>
+            <div class="col bottom-align">
+                <img src="navigation-arrow.svg" alt="formworkx" width="46" height="45">
+            </div>
+            <div class="col bottom-align">
+                <img src="bulls-eye.svg" alt="formworkx" width="70" height="63">
+            </div>
+
+
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>Comprehensive reporting for informed dections</p>
+            </div>
+            <div class="col">
+                <p>User-Friendly interface for seamless navigation</p>
+            </div>
+            <div class="col">
+                <p>Accurate materials list and cost</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<section>
+    <div style="height: 300px;">
+        Demo
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col vert-align">
+                <h3>Flexiable plans for every contractor</h3>
+                <div class="card-group">
+                <div class="card" style="width: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Try it Now</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Single person</h6>
+                        <p class="card-text">Free</p>
+                        
+                        <a href="#" class="btn btn-primary">Try It</a>
+                    </div>
+                </div>
+                <div class="card" style="width: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Starter plan</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">$10/month</h6>
+                        <p class="card-text">Single uer</p>
+                        
+                        <a href="#" class="btn btn-primary">Subscribe</a>
+                    </div>
+                </div>
+                <div class="card" style="width: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Pro plan</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">$100/month</h6>
+                        <p class="card-text">up to 5 people</p>
+                        <a href="#" class="btn btn-primary">Subscribe</a>
+                    </div>
+                </div>
+                </div>
+
+
+            </div>
+            <div class="col">
+                <img src="home-plan-drawing.png" alt="formworkx" width="500" height="500">
+
+            </div>
+
+        </div>
+        
+    </div>
+</section>
+<section>
+    <div class="container">
+        
+        <div class="row">
+            <div class="col">
+                <h5>Conact us</h5>
+       <EditForm Model="_contact" >
+            <div class="mb-3">
+                <label class="form-label" for="name">Name</label>
+                <InputText class="form-control" id="name" @bind-Value="_contact.Name" aria-required="true" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="email">Email</label>
+                <InputText class="form-control" id="email" @bind-Value="_contact.Email" aria-required="true" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="message">Message</label>
+                <textarea id="message" class="form-control" @bind="_contact.Message" rows="5"></textarea>
+
+                
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </EditForm>
+        </div>
+        <div class="col"></div>
+        </div>
+    </div>
+</section>
+
+
+@code
+{
+
+    [SupplyParameterFromForm]
+    private ContactModel _contact  { get; set; } = new();
+
+
+    public async void Save()
+    {
+
+        
+        
+        
+    }
+
+    class ContactModel
+    {
+        public string Name = string.Empty;
+        public string Email = string.Empty;
+        public string Message = string.Empty;
+    }
+}

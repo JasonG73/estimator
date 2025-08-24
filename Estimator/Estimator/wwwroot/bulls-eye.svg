@@ -1,0 +1,9 @@
+<svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bullseye graphic -->
+  <!-- Second ring (now outermost) -->
+  <circle cx="75" cy="75" r="60" stroke="#15365F" stroke-width="4" fill="none"/>
+  <!-- Third ring (now middle) -->
+  <circle cx="75" cy="75" r="30" stroke="#15365F" stroke-width="4" fill="none"/>
+  <!-- Center dot (bullseye) -->
+  <circle cx="75" cy="75" r="10" fill="#15365F"/>
+</svg>

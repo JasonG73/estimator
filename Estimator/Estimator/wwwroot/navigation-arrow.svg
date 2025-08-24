@@ -1,0 +1,9 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Navigation Arrow -->
+  <!-- A simple right-pointing arrow using a polyline -->
+  <polyline points="20,15 40,30 20,45"
+            stroke="#15365F"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+</svg>
